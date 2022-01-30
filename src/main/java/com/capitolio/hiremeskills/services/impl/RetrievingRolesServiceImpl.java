@@ -18,7 +18,7 @@ public class RetrievingRolesServiceImpl implements RetrievingRolesService {
 
     @Override
     public Optional<RoleDto> retrieveBy(Long id) {
-        var responseFromOuterService = this.rolesClient.retrieveById(id);
+        var responseFromOuterService = this.rolesClient.retrieveRoleById(id);
         if (responseFromOuterService.getStatusCode().is2xxSuccessful())
             return Optional.ofNullable(responseFromOuterService.getBody());
         if (responseFromOuterService.getStatusCode().value() == 404)
