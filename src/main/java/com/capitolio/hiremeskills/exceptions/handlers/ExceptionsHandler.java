@@ -17,7 +17,7 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(value = InstanceDoesNotExistException.class)
     public ResponseEntity<ErrorMessageDto> handle(InstanceDoesNotExistException exception){
-        return ResponseEntity.badRequest().body(new ErrorMessageDto(exception.getMessage()));
+        return ResponseEntity.status(404).body(new ErrorMessageDto(exception.getMessage()));
     }
 
 }

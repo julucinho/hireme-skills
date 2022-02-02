@@ -2,7 +2,7 @@ package com.capitolio.hiremeskills.services.impl;
 
 import com.capitolio.hiremeskills.clients.RolesClient;
 import com.capitolio.hiremeskills.dtos.RoleDto;
-import com.capitolio.hiremeskills.exceptions.ProblemAtConsumingCompaniesServiceException;
+import com.capitolio.hiremeskills.exceptions.NotFoundByIdException;
 import com.capitolio.hiremeskills.loggers.RetrievingRolesServiceLogger;
 import com.capitolio.hiremeskills.services.RetrievingRolesService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +18,12 @@ public class RetrievingRolesServiceImpl implements RetrievingRolesService {
 
     @Override
     public Optional<RoleDto> retrieveBy(Long id) {
-        var responseFromOuterService = this.rolesClient.retrieveRoleById(id);
-        if (responseFromOuterService.getStatusCode().is2xxSuccessful())
-            return Optional.ofNullable(responseFromOuterService.getBody());
-        if (responseFromOuterService.getStatusCode().value() == 404)
+        try{
+            var role = this.rolesClient.retrieveRoleById(id);
+            return Optional.of(role);
+        } catch (NotFoundByIdException exception){
+            RetrievingRolesServiceLogger.roleIdNotFound(id);
             return Optional.empty();
-        RetrievingRolesServiceLogger.logProblemWhenTryingToRetrieveById(id, responseFromOuterService.toString());
-        throw new ProblemAtConsumingCompaniesServiceException();
+        }
     }
 }

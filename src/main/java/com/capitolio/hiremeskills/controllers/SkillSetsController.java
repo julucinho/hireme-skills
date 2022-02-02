@@ -2,8 +2,8 @@ package com.capitolio.hiremeskills.controllers;
 
 import com.capitolio.hiremeskills.dtos.RoleSkillSetDto;
 import com.capitolio.hiremeskills.dtos.UserSkillSetDto;
-import com.capitolio.hiremeskills.exceptions.RoleDoestNotExistException;
 import com.capitolio.hiremeskills.exceptions.RoleSkillSetDoestNotExistException;
+import com.capitolio.hiremeskills.exceptions.UserSkillSetDoestNotExistException;
 import com.capitolio.hiremeskills.services.RetrievingSkillSetsForCompaniesService;
 import com.capitolio.hiremeskills.services.RetrievingSkillSetsForUsersService;
 import com.capitolio.hiremeskills.services.SavingSkillSetsForCompaniesService;
@@ -35,6 +35,7 @@ public class SkillSetsController {
     public ResponseEntity<Void> saveUserSkillSet(
             @PathVariable Long userId,
             @RequestBody UserSkillSetDto userSkillSet){
+        userSkillSet.setUserId(userId);
         this.savingSkillSetsForUsersService.saveNew(userSkillSet);
         return ResponseEntity.noContent().build();
     }
@@ -46,7 +47,7 @@ public class SkillSetsController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<UserSkillSetDto> retrieveUserSkillSet(@PathVariable Long userId){
-        return ResponseEntity.ok(this.retrievingSkillSetsForUsersService.retrieveBy(userId).orElse(new UserSkillSetDto()));
+        return ResponseEntity.ok(this.retrievingSkillSetsForUsersService.retrieveBy(userId).orElseThrow(() -> new UserSkillSetDoestNotExistException(userId)));
     }
 
 }
